@@ -4,7 +4,6 @@ on:
   schedule:
     - cron: '0 2 * * *' # run at 2 AM UTC
   workflow_dispatch:
-    
 
 env:
   CARGO_TERM_COLOR: always
@@ -25,20 +24,34 @@ jobs:
         override: true
         components: rustfmt, clippy
     - uses: Swatinem/rust-cache@v1
-    - name: Build
-      run: cargo build --release --all
-    - name: Upload artifacts (daemon)
+    - name: Build for amd64
+      run: cargo build --release --all --target x86_64-apple-darwin
+    - name: Upload artifacts (daemon amd64)
       uses: actions/upload-artifact@v4
       with:
         name: cartel-daemon-${{ env.NIGHTLY_DATE }}.darwin.amd64
-        path: target/release/daemon
+        path: target/x86_64-apple-darwin/release/daemon
         retention-days: 5
-    - name: Upload artifacts (client)
+    - name: Upload artifacts (client amd64)
       uses: actions/upload-artifact@v4
       with:
         name: cartel-${{ env.NIGHTLY_DATE }}.darwin.amd64
-        path: target/release/client
-        retention-days: 5    
+        path: target/x86_64-apple-darwin/release/client
+        retention-days: 5
+    - name: Build for arm64
+      run: cargo build --release --all --target aarch64-apple-darwin
+    - name: Upload artifacts (daemon arm64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: cartel-daemon-${{ env.NIGHTLY_DATE }}.darwin.arm64
+        path: target/aarch64-apple-darwin/release/daemon
+        retention-days: 5
+    - name: Upload artifacts (client arm64)
+      uses: actions/upload-artifact@v4
+      with:
+        name: cartel-${{ env.NIGHTLY_DATE }}.darwin.arm64
+        path: target/aarch64-apple-darwin/release/client
+        retention-days: 5
 
   build-nightly-linux:
     runs-on: ubuntu-latest
