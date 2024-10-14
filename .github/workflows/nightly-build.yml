@@ -24,6 +24,10 @@ jobs:
         override: true
         components: rustfmt, clippy
     - uses: Swatinem/rust-cache@v1
+    - name: Add x86_64-apple-darwin target
+      run: rustup target add x86_64-apple-darwin
+    - name: Build for x86_64-apple-darwin
+      run: cargo build --release --target x86_64-apple-darwin
     - name: Build for amd64
       run: cargo build --release --all --target x86_64-apple-darwin
     - name: Upload artifacts (daemon amd64)
